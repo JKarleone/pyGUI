@@ -1,4 +1,4 @@
-from MainWindow import MainWindow
+from forms.MainWindow import MainWindow
 
 
 if __name__ == '__main__':

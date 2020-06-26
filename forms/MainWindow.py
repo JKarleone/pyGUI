@@ -1,7 +1,9 @@
 from tkinter import *
-from LoginForm import LoginForm
-from RegisterForm import RegisterForm
-from FilmListForm import FilmListForm
+from forms.LoginForm import LoginForm
+from forms.RegisterForm import RegisterForm
+from forms.FilmListForm import FilmListForm
+from ClientSocket import Request
+from Checker import Checker
 
 
 class MainWindow(object):
@@ -9,14 +11,44 @@ class MainWindow(object):
     def logout_btn_clicked(self):
         self.change_login_form_visibility()
         self.change_film_list_form_visibility()
+        self.footer_btn['text'] = "Registration"
 
     def login_btn_clicked(self):
-        self.change_login_form_visibility()
-        self.change_film_list_form_visibility()
+        login = self.login_form.login.get()
+        password = self.login_form.password.get()
+        check = Checker.check_auth(login, password)
+        if check == '':
+            request_body = 'auth&' + login + '&' + password
+            ans = Request.request(request_body)
+            print(ans)
+            if ans != 'auth error':
+                user_params = ans.split('&')
+                self.film_list_form.auth(login, user_params[1], user_params[0], user_params[2])
+                self.change_login_form_visibility()
+                self.change_film_list_form_visibility()
+                self.error_label['text'] = ''
+            else:
+                check = ans
+
+        self.error_label['text'] = check
+        self.login_form.clear_entries()
 
     def register_btn_clicked(self):
-        self.change_register_form_visibility()
-        self.change_film_list_form_visibility()
+        login = self.register_form.login.get()
+        name = self.register_form.name.get()
+        password = self.register_form.password.get()
+        check = Checker.check_reg(login, name, password)
+        if check == '':
+            request_body = 'reg&' + login + '&' + password + '&' + name
+            ans = Request.request(request_body)
+            if ans == 'ok':
+                self.change_register_form_visibility()
+                self.change_film_list_form_visibility()
+            else:
+                check = ans
+
+        self.error_label['text'] = check
+        self.register_form.clear_entries()
 
     # Buttons visibility
     def change_footer_btn_visibility(self):
@@ -41,16 +73,18 @@ class MainWindow(object):
         if self.register_form.visible:
             self.register_button.place_forget()
         else:
-            self.register_button.place(relx=.5, rely=0.72, anchor="c")
+            self.register_button.place(relx=.5, rely=0.62, anchor="c")
 
     # Forms Visibility
     def change_login_form_visibility(self):
         self.change_login_btn_visibility()
         self.login_form.change_visibility()
+        self.error_label['text'] = ''
 
     def change_register_form_visibility(self):
         self.change_register_btn_visibility()
         self.register_form.change_visibility()
+        self.error_label['text'] = ''
 
     def change_film_list_form_visibility(self):
         self.change_logout_btn_visibility()
@@ -87,10 +121,16 @@ class MainWindow(object):
         self.register_button = Button(self.window, text="SIGN UP", width=16, bg='#FF5722', fg='white',
                                       command=self.register_btn_clicked)
 
-        # List of all films Form
-        self.film_list_form = FilmListForm(self.window)
+        # Error label
+        self.error_label = Label(self.window, text='', font=('Times', 14), fg='#FF0000')
+        self.error_label.place(relx=.5, rely=0.7, anchor="c")
 
+        # List of all films Form
+        self.film_list_form = FilmListForm(self.window, self)
+
+        # Log out btn
         self.logout_btn = Button(self.window, text="Log out", width=12, command=self.logout_btn_clicked)
 
+        # Registration/Login btn
         self.footer_btn = Button(self.window, text="Registration", width=12, command=self.change_form)
         self.footer_btn.place(relx=.5, rely=.9, anchor="c")
