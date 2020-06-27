@@ -2,8 +2,8 @@ from tkinter import *
 from forms.LoginForm import LoginForm
 from forms.RegisterForm import RegisterForm
 from forms.FilmListForm import FilmListForm
-from ClientSocket import Request
-from Checker import Checker
+from client.Client import Request
+from client.Checker import Checker
 
 
 class MainWindow(object):

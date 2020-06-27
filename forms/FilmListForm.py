@@ -1,8 +1,8 @@
 from tkinter import *
 from forms.FilmForm import FilmForm
 from forms.FilmAddingForm import FilmAddingForm
-from ClientSocket import Request
-from Checker import Checker
+from client.Client import Request
+from client.Checker import Checker
 
 
 class FilmListForm(object):
