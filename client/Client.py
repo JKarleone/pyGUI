@@ -8,6 +8,7 @@ class Request:
         try:
             sock.connect(('localhost', 8888))
         except:
+            sock.close()
             return 'can\'t connect to server'
         message_len = str(len(request_body))
         while len(message_len) != 64:
