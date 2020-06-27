@@ -5,7 +5,10 @@ class Request:
     @staticmethod
     def request(request_body):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', 8888))
+        try:
+            sock.connect(('localhost', 8888))
+        except:
+            return 'can\'t connect to server'
         message_len = str(len(request_body))
         while len(message_len) != 64:
             message_len = '0' + message_len

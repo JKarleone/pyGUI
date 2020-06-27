@@ -21,7 +21,7 @@ class MainWindow(object):
             request_body = 'auth&' + login + '&' + password
             ans = Request.request(request_body)
             print(ans)
-            if ans != 'auth error':
+            if ans != 'auth error' and ans != 'can\'t connect to server':
                 user_params = ans.split('&')
                 self.film_list_form.auth(login, user_params[1], user_params[0], user_params[2])
                 self.change_login_form_visibility()
