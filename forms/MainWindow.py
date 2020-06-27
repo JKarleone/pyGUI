@@ -41,9 +41,11 @@ class MainWindow(object):
         if check == '':
             request_body = 'reg&' + login + '&' + password + '&' + name
             ans = Request.request(request_body)
-            if ans == 'ok':
+            if ans.isdigit():
+                self.film_list_form.auth(login, name, 1, ans)
                 self.change_register_form_visibility()
                 self.change_film_list_form_visibility()
+                self.error_label['text'] = ''
             else:
                 check = ans
 
@@ -105,6 +107,7 @@ class MainWindow(object):
         self.window = Tk()
         self.window.title('Film Library')
         self.window.geometry('800x600')
+        self.window.resizable(width=False, height=False)
 
         main_label = Label(self.window, text="Film Library", font=("Times", 30))
         main_label.pack(side=TOP, fill=Y)

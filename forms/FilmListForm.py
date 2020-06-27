@@ -14,6 +14,31 @@ class FilmListForm(object):
         film = self.films[select]
         self.film_form.show_film_form(film[0], film[1], film[2], film[3],
                                       film[4], film[5], film[6])
+        if film[4] == self.login:
+            self.delete_btn.place(relx=.41, rely=.25, anchor='c')
+
+        self.score1_btn.place(relx=.5, rely=.2)
+        self.score2_btn.place(relx=.55, rely=0.2)
+        self.score3_btn.place(relx=.6, rely=0.2)
+        self.score4_btn.place(relx=.65, rely=0.2)
+        self.score5_btn.place(relx=.7, rely=0.2)
+
+        score = int(Request.request('score&get&' + self.user_id + '&' + film[0]))
+
+        self.reset_color()
+
+        if score == 1:
+            self.score1_btn['bg'] = '#00FF00'
+        if score == 2:
+            self.score2_btn['bg'] = '#00FF00'
+        if score == 3:
+            self.score3_btn['bg'] = '#00FF00'
+        if score == 4:
+            self.score4_btn['bg'] = '#00FF00'
+        if score == 5:
+            self.score5_btn['bg'] = '#00FF00'
+
+        print('My score ', score)
 
     def add_btn_clicked(self):
         self.film_form.hide_form()
@@ -47,8 +72,66 @@ class FilmListForm(object):
         if check == '':
             request_body = 'film&add&' + title + '&' + desc + '&' + \
                            year + '&' + self.user_id + '&' + actors + '&' + filmmaker
+            msg = Request.request(request_body)
+            if msg != 'ok':
+                check = msg
+            else:
+                self.update_films()
+
         print('check: ', check)
         self.film_adding_form.error_label['text'] = check
+
+    def update_btn_clicked(self):
+        self.update_films()
+        self.film_form.hide_form()
+
+    def delete_btn_clicked(self):
+        index = self.box_of_films.curselection()
+        if index == "":
+            return
+        film_name = self.box_of_films.get(index)
+        creator = self.films[film_name][4]
+        if creator == self.login or self.usertype == '2':
+            Request.request('film&delete&' + film_name)
+            self.update_films()
+            self.film_form.hide_form()
+        else:
+            self.delete_btn.place_forget()
+
+    def score1_btn_clicked(self):
+        self.reset_color()
+        self.score1_btn['bg'] = '#00FF00'
+        Request.request('score&set&1&' + self.user_id + '&' + self.film_form.title['text'])
+        self.update_films()
+        self.film_form.hide_form()
+
+    def score2_btn_clicked(self):
+        self.reset_color()
+        self.score2_btn['bg'] = '#00FF00'
+        Request.request('score&set&2&' + self.user_id + '&' + self.film_form.title['text'])
+        self.update_films()
+        self.film_form.hide_form()
+
+    def score3_btn_clicked(self):
+        self.reset_color()
+        self.score3_btn['bg'] = '#00FF00'
+        Request.request('score&set&3&' + self.user_id + '&' + self.film_form.title['text'])
+        self.update_films()
+        self.film_form.hide_form()
+
+    def score4_btn_clicked(self):
+        self.reset_color()
+        self.score4_btn['bg'] = '#00FF00'
+        Request.request('score&set&4&' + self.user_id + '&' + self.film_form.title['text'])
+        self.update_films()
+        self.film_form.hide_form()
+
+    def score5_btn_clicked(self):
+        self.reset_color()
+        self.score5_btn['bg'] = '#00FF00'
+        Request.request('score&set&5&' + self.user_id + '&' + self.film_form.title['text'])
+        self.update_films()
+        self.film_form.hide_form()
 
     def __init__(self, window, main_window):
         self.main = main_window
@@ -75,6 +158,13 @@ class FilmListForm(object):
         self.add_btn = Button(window, text="Add film", width=10, command=self.add_btn_clicked)
         self.back_btn = Button(window, text="Back", width=12, command=self.back_btn_clicked)
         self.add_film_btn = Button(window, text="Add", width=10, command=self.add_film_btn_clicked)
+        self.update_btn = Button(window, text='Update', width=10, command=self.update_btn_clicked)
+        self.delete_btn = Button(window, text='Delete', width=10, command=self.delete_btn_clicked)
+        self.score1_btn = Button(window, text='1', width=2, command=self.score1_btn_clicked)
+        self.score2_btn = Button(window, text='2', width=2, command=self.score2_btn_clicked)
+        self.score3_btn = Button(window, text='3', width=2, command=self.score3_btn_clicked)
+        self.score4_btn = Button(window, text='4', width=2, command=self.score4_btn_clicked)
+        self.score5_btn = Button(window, text='5', width=2, command=self.score5_btn_clicked)
 
         self.film_form = FilmForm(window)
         self.film_adding_form = FilmAddingForm(window)
@@ -87,6 +177,13 @@ class FilmListForm(object):
             self.add_btn.place_forget()
             self.films_count.place_forget()
             self.user_label.place_forget()
+            self.update_btn.place_forget()
+            self.delete_btn.place_forget()
+            self.score1_btn.place_forget()
+            self.score2_btn.place_forget()
+            self.score3_btn.place_forget()
+            self.score4_btn.place_forget()
+            self.score5_btn.place_forget()
         else:
             self.film_main_label.place(relx=.5, rely=0.15, anchor="c")
             self.films_count.place(relx=.18, rely=.2)
@@ -94,6 +191,7 @@ class FilmListForm(object):
             self.box_of_films.place(relx=0.2, rely=0.55, anchor="c")
             self.show_btn.place(relx=.41, rely=.3, anchor="c")
             self.user_label.place(relx=.5, rely=.95, anchor='c')
+            self.update_btn.place(relx=.05, rely=.15)
 
         self.visible = not self.visible
 
@@ -105,6 +203,7 @@ class FilmListForm(object):
         self.user_label['text'] = name + '(' + login + ')'
 
     def update_films(self):
+        self.film_names = list()
         self.films = dict()
         self.box_of_films.delete(0, END)
         films_req = Request.request('film&getall').split('\n')
@@ -120,3 +219,10 @@ class FilmListForm(object):
 
         for elem in self.film_names:
             self.box_of_films.insert(END, elem)
+
+    def reset_color(self):
+        self.score1_btn['bg'] = '#FFFFFF'
+        self.score2_btn['bg'] = '#FFFFFF'
+        self.score3_btn['bg'] = '#FFFFFF'
+        self.score4_btn['bg'] = '#FFFFFF'
+        self.score5_btn['bg'] = '#FFFFFF'

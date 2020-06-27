@@ -34,6 +34,12 @@ class Checker:
         if len(desc) > 128:
             return 'description mustn\'t exceed 128 symbols'
 
+        if len(actors) > 64:
+            return 'too many actors'
+
+        if len(filmmaker.strip().split(' ')) > 2 or len(filmmaker.split(',')) > 1:
+            return 'there should be the only one filmmaker'
+
         if not year.isdigit():
             return 'wrong year'
 
