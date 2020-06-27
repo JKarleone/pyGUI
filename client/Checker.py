@@ -1,12 +1,12 @@
 class Checker:
     @staticmethod
     def check_reg(login: str, name: str, password: str):
-        if (login or name or password) == '':
+        if login == '' or name == '' or password == '':
             return 'there are empty spaces'
 
-        if len(login) < 6:
+        if len(login) < 5:
             return 'login is too short'
-        if len(name) < 6:
+        if len(name) < 5:
             return 'name is too short'
         if len(password) < 6:
             return 'password is too short'
@@ -18,7 +18,7 @@ class Checker:
 
     @staticmethod
     def check_auth(login: str, password: str):
-        if (login or password) == '':
+        if login == '' or password == '':
             return 'there are empty spaces'
 
         if not login.isalnum() or not password.isalnum():
@@ -28,7 +28,7 @@ class Checker:
 
     @staticmethod
     def check_film(title: str, desc: str, year: str, actors: str, filmmaker: str):
-        if (title or desc or year or actors or filmmaker) == '':
+        if title == '' or desc == '' or year == '' or actors == '' or filmmaker == '':
             return 'there are empty spaces'
 
         if len(desc) > 128:
@@ -46,6 +46,9 @@ class Checker:
         # 1900-2020 - possible
         if not int(year) in range(1900, 2021):
             return 'date is impossible'
+
+        if title.find('&') != -1 or desc.find('&') != -1 or year.find('&') != -1 or actors.find('&') != -1 or filmmaker.find('&') != -1:
+            return 'there are invalid symbols'
 
         return ''
 
